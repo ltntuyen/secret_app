@@ -11,14 +11,12 @@ class C_Room extends Controller{
     public function create_room(){
 
         try {
-            date_default_timezone_set("Asia/Ho_Chi_Minh");
+            
             $roomModel = new M_Room();
 
-            $idroom = "'R".time()."KEY".rand(0, 999)."'";
+            $data["idroom"] = time()."KEY".rand(0, 999);
 
-            $attributes=["idroom"];
-            $values=[$idroom];
-            $roomModel->create($attributes, $values);
+            $last_id = $roomModel->create($data);
 
         } catch (\Throwable $th) {
             echo "Ban khong the tao phòng".$th;
@@ -33,6 +31,6 @@ class C_Room extends Controller{
     public function delete_room(){
         // code
     }
-
+ 
 }
 ?>

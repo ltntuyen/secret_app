@@ -14,7 +14,7 @@ class Connection{
             return $conn;
         
         } catch(PDOException $e) {
-            echo "Kết nối database thất bại !!";
+            echo "Lỗi kết nối dữ liệu thất bại !!";
             exit();
         }
     }
@@ -22,12 +22,35 @@ class Connection{
     /**
      * $query = "INSERT INTO MyGuests (firstname, lastname, email) VALUES ('John', 'Doe', 'john@example.com')";
      */
-    public function create($query){
+    public function create($table, $data, $option){
         $conn = $this->database(); // gọi function chung 1 class
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = $query;
+        $attributes = array();
+        $values = array();
+        foreach($data as $key => $value){
+            $attributes[$key] = $key;
+            if(is_string($value)){
+                $values[$key] = "'".$value."'";
+            }
+            else{
+                $values[$key] = $value;
+            }            
+        }
+        $sql = "INSERT INTO $table (".implode(',',$attributes).") VALUES (".implode(',',$values).")";
+        
+        if( isset($option) 
+            && isset($option['TIMESTAMP']) 
+            && $option['TIMESTAMP'] == true 
+            && isset($option['CREATED_AT']) 
+            && $option['CREATED_AT'] != null){
+
+            $CREATED_AT = $option['CREATED_AT'];
+            $sql = "INSERT INTO $table (".implode(',',$attributes).",$CREATED_AT) VALUES (".implode(',',$values).",CURRENT_TIMESTAMP())";
+        }
+        
         $conn->exec($sql);
-        echo "Thêm thành công!!";
+
+        return $conn->lastInsertId();
     }
 }
 

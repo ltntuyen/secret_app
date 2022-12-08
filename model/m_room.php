@@ -3,6 +3,13 @@ include "connectDB.php";
 
 class M_Room{
 
+    protected $table = 'room';
+
+    protected $option = [
+        'TIMESTAMP' => true,
+        'CREATED_AT' => 'created_at'
+    ];
+
     public function firts($data){
         // code
     }
@@ -19,10 +26,10 @@ class M_Room{
         // code
     }
 
-    public function create($attributes, $values){
+    public function create($data){
         $ConnectDB = new Connection();
-        $query = "INSERT INTO room (".implode(",",$attributes).") VALUES (".implode(",",$values).")";
-        $ConnectDB->create($query);
+        $last_id =  $ConnectDB->create($this->table, $data, $this->option);
+        return $last_id;
     }
 
     public function update($data){
